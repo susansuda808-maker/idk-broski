@@ -1,0 +1,484 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Assignment Button · deadline size & color</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+        }
+        body {
+            background: #f1f5f9;
+            min-height: 100vh;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 16px;
+        }
+        .card {
+            max-width: 800px;
+            width: 100%;
+            background: white;
+            border-radius: 2rem;
+            padding: 2rem 2rem 2.5rem;
+            box-shadow: 0 20px 35px -8px rgba(0,0,0,0.2);
+            text-align: center;
+        }
+        h1 {
+            font-weight: 600;
+            font-size: 2rem;
+            margin-top: 0;
+            margin-bottom: 1rem;
+            color: #0f172a;
+            letter-spacing: -0.02em;
+        }
+        .sub {
+            color: #334155;
+            margin-bottom: 2rem;
+            font-size: 1.1rem;
+        }
+        /* ----- THE BIG BUTTON ----- */
+        .big-button {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            margin: 1rem auto 2.5rem;
+            padding: 1.2em 2em;
+            background-color: #22c55e; /* base green, overridden by js */
+            color: white;
+            font-weight: bold;
+            font-size: 2rem;
+            border: none;
+            border-radius: 999px;
+            box-shadow: 0 15px 30px -10px rgba(0,0,0,0.3);
+            cursor: default;
+            transition: transform 0.2s ease, background-color 0.2s ease;
+            white-space: nowrap;
+            min-width: 280px;
+            text-shadow: 0 2px 5px rgba(0,0,0,0.2);
+            transform-origin: center;
+            will-change: transform, background-color;
+        }
+        /* form row */
+        .add-section {
+            background: #f8fafc;
+            border-radius: 40px;
+            padding: 1.8rem 1.5rem;
+            margin-bottom: 2.5rem;
+            border: 1px solid #e2e8f0;
+        }
+        .form-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            align-items: flex-end;
+            justify-content: center;
+        }
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            text-align: left;
+            min-width: 160px;
+        }
+        .form-group label {
+            font-size: 0.85rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: #475569;
+            margin-bottom: 4px;
+        }
+        .form-group input {
+            padding: 10px 14px;
+            border-radius: 40px;
+            border: 1px solid #cbd5e1;
+            background: white;
+            font-size: 1rem;
+            transition: 0.15s;
+        }
+        .form-group input:focus {
+            outline: 2px solid #3b82f6;
+            border-color: transparent;
+        }
+        .btn-add {
+            background: #0f172a;
+            color: white;
+            border: none;
+            padding: 10px 28px;
+            border-radius: 40px;
+            font-weight: 600;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: 0.15s;
+            height: 46px;
+            margin-top: 18px;
+            white-space: nowrap;
+        }
+        .btn-add:hover {
+            background: #1e293b;
+            transform: scale(1.02);
+        }
+        /* assignment list */
+        .list-title {
+            font-weight: 600;
+            font-size: 1.3rem;
+            text-align: left;
+            color: #0f172a;
+            margin: 0 0 0.75rem 0;
+        }
+        .assignment-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            border-radius: 30px;
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            overflow: hidden;
+        }
+        .list-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 14px 20px;
+            background: white;
+            border-bottom: 1px solid #e2e8f0;
+            transition: background 0.1s;
+        }
+        .list-item:last-child {
+            border-bottom: none;
+        }
+        .item-info {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+        .item-name {
+            font-weight: 600;
+            font-size: 1.1rem;
+            min-width: 150px;
+        }
+        .item-deadline {
+            background: #eef2ff;
+            padding: 4px 14px;
+            border-radius: 40px;
+            font-size: 0.9rem;
+            color: #1e293b;
+        }
+        .item-done {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: #f1f5f9;
+            padding: 5px 15px;
+            border-radius: 40px;
+        }
+        .item-done input {
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+        }
+        .btn-delete {
+            background: none;
+            border: 1px solid #fecaca;
+            color: #b91c1c;
+            font-weight: bold;
+            font-size: 1.2rem;
+            line-height: 1;
+            padding: 6px 16px;
+            border-radius: 40px;
+            cursor: pointer;
+            transition: 0.1s;
+            margin-left: 10px;
+        }
+        .btn-delete:hover {
+            background: #fee2e2;
+            border-color: #ef4444;
+        }
+        .empty-message {
+            padding: 30px;
+            color: #64748b;
+            font-style: italic;
+            text-align: center;
+        }
+        footer {
+            margin-top: 2rem;
+            font-size: 0.9rem;
+            color: #64748b;
+        }
+    </style>
+</head>
+<body>
+<div class="card">
+    <h1>📋 DEADLINE BUTTON</h1>
+    <div class="sub">bigger when deadline far · greener when fewer incomplete</div>
+
+    <!-- THE BIG BUTTON (dynamic) -->
+    <div class="big-button" id="bigButton">
+        ⏳ 0 incomplete
+    </div>
+
+    <!-- add assignment form -->
+    <div class="add-section">
+        <div class="form-row">
+            <div class="form-group">
+                <label>Assignment name</label>
+                <input type="text" id="assignName" placeholder="e.g. Math HW" autocomplete="off">
+            </div>
+            <div class="form-group">
+                <label>Deadline</label>
+                <input type="datetime-local" id="assignDeadline">
+            </div>
+            <div class="form-group" style="min-width: auto;">
+                <label style="opacity:0;">Done?</label>
+                <div style="display: flex; gap: 8px; align-items: center; background: white; padding: 5px 18px; border-radius: 40px; border:1px solid #cbd5e1;">
+                    <input type="checkbox" id="assignDone"> <span style="font-weight:500;">completed</span>
+                </div>
+            </div>
+            <button class="btn-add" id="addBtn">➕ ADD</button>
+        </div>
+    </div>
+
+    <!-- assignment list (for overview & management) -->
+    <div class="list-title">📌 your assignments</div>
+    <ul class="assignment-list" id="assignmentList">
+        <li class="empty-message">No assignments yet. Add one above ☝️</li>
+    </ul>
+    <footer>size ∝ time left · color ∝ % incomplete</footer>
+</div>
+
+<script>
+    (function() {
+        // ----- data storage -----
+        let assignments = [];   // each: { id, name, deadlineTimestamp, completed }
+
+        // DOM elements
+        const bigButton = document.getElementById('bigButton');
+        const assignName = document.getElementById('assignName');
+        const assignDeadline = document.getElementById('assignDeadline');
+        const assignDone = document.getElementById('assignDone');
+        const addBtn = document.getElementById('addBtn');
+        const assignmentList = document.getElementById('assignmentList');
+
+        // helper: generate unique id
+        function uid() {
+            return Date.now() + '-' + Math.random().toString(36).substr(2, 9);
+        }
+
+        // ----- update button appearance (size + color) -----
+        function updateButton() {
+            const total = assignments.length;
+            const incomplete = assignments.filter(a => !a.completed).length;
+            const incompleteRatio = total === 0 ? 0 : incomplete / total;   // 0 = all done, 1 = all incomplete
+
+            // ---- COLOR: green (hsl 120) → red (hsl 0) ----
+            // hue from 120 (all done) to 0 (all incomplete)
+            let hue = 120 * (1 - incompleteRatio);   // 120 → 0
+            // if no assignments -> neutral gray
+            if (total === 0) {
+                bigButton.style.backgroundColor = '#64748b'; // slate gray
+            } else {
+                bigButton.style.backgroundColor = `hsl(${hue}, 85%, 55%)`;
+            }
+
+            // ---- SIZE based on nearest deadline among INCOMPLETE assignments ----
+            let scale = 1.0;        // default
+            const now = Date.now();
+
+            // collect timestamps of incomplete assignments
+            const incompleteTimestamps = assignments
+                .filter(a => !a.completed && a.deadlineTimestamp != null)
+                .map(a => a.deadlineTimestamp);
+
+            if (incompleteTimestamps.length > 0) {
+                // nearest deadline (smallest timestamp)
+                const nearest = Math.min(...incompleteTimestamps);
+                const timeDiffMs = nearest - now;   // positive = future, negative = overdue
+
+                // map time difference to a scale factor:
+                // - if > 7 days (604800000 ms) → max scale 2.0
+                // - if <= 0 (overdue or now) → min scale 0.6
+                // linear between
+                const maxDays = 7 * 24 * 60 * 60 * 1000; // 7 days in ms
+                let percent = Math.max(0, Math.min(1, timeDiffMs / maxDays));
+                // but we want bigger button for bigger deadline (more time) -> scale up
+                // range: 0.6 (overdue) to 2.0 (>=7 days)
+                scale = 0.6 + (percent * 1.4);   // 0.6 → 2.0
+            } else {
+                // NO incomplete assignments: all done or none at all → biggest & calm
+                scale = 2.0;   // big and relaxed
+            }
+
+            // apply scale transform
+            bigButton.style.transform = `scale(${scale})`;
+
+            // update button text
+            if (total === 0) {
+                bigButton.innerText = `📌 0 assignments`;
+            } else {
+                const doneCount = total - incomplete;
+                bigButton.innerText = `📋 ${doneCount}/${total} done`;
+            }
+        }
+
+        // ----- render the list of assignments (with toggle & delete) -----
+        function renderList() {
+            if (assignments.length === 0) {
+                assignmentList.innerHTML = '<li class="empty-message">✨ No assignments yet. Add one above ☝️</li>';
+                return;
+            }
+
+            let html = '';
+            // sort by deadline (soonest first), but keep UI tidy
+            const sorted = [...assignments].sort((a, b) => a.deadlineTimestamp - b.deadlineTimestamp);
+
+            for (let assign of sorted) {
+                const deadlineDate = new Date(assign.deadlineTimestamp);
+                const formatted = deadlineDate.toLocaleString(undefined, {
+                    month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit'
+                });
+                const checkedAttr = assign.completed ? 'checked' : '';
+
+                html += `
+                    <li class="list-item" data-id="${assign.id}">
+                        <div class="item-info">
+                            <span class="item-name">${escapeHtml(assign.name)}</span>
+                            <span class="item-deadline">📅 ${formatted}</span>
+                            <span class="item-done">
+                                <input type="checkbox" class="toggle-done" ${checkedAttr}> done
+                            </span>
+                        </div>
+                        <button class="btn-delete delete-btn">✕</button>
+                    </li>
+                `;
+            }
+            assignmentList.innerHTML = html;
+
+            // attach event listeners to checkboxes and delete buttons
+            document.querySelectorAll('.toggle-done').forEach(checkbox => {
+                checkbox.addEventListener('change', (e) => {
+                    const li = e.target.closest('.list-item');
+                    const id = li.dataset.id;
+                    const assign = assignments.find(a => a.id === id);
+                    if (assign) {
+                        assign.completed = e.target.checked;
+                        updateButton();      // update both color and size
+                        renderList();        // re-render to keep check state consistent (optional)
+                    }
+                });
+            });
+
+            document.querySelectorAll('.delete-btn').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    const li = e.target.closest('.list-item');
+                    const id = li.dataset.id;
+                    assignments = assignments.filter(a => a.id !== id);
+                    updateButton();
+                    renderList();
+                });
+            });
+        }
+
+        // simple escape for innerHTML safety
+        function escapeHtml(unsafe) {
+            return unsafe.replace(/[&<>"]/g, function(m) {
+                if(m === '&') return '&amp;'; if(m === '<') return '&lt;'; if(m === '>') return '&gt;'; if(m === '"') return '&quot;';
+                return m;
+            });
+        }
+
+        // ----- add new assignment -----
+        function addAssignment() {
+            const name = assignName.value.trim();
+            if (!name) {
+                alert('Please enter an assignment name');
+                return;
+            }
+            const deadlineStr = assignDeadline.value;
+            if (!deadlineStr) {
+                alert('Please select a deadline');
+                return;
+            }
+
+            // parse datetime-local (returns local time string, date constructor does treat as UTC? We'll handle)
+            // create date object - treat as local time (browser does)
+            const deadlineDate = new Date(deadlineStr); 
+            if (isNaN(deadlineDate.getTime())) {
+                alert('Invalid date');
+                return;
+            }
+
+            const newAssign = {
+                id: uid(),
+                name: name,
+                deadlineTimestamp: deadlineDate.getTime(),
+                completed: assignDone.checked
+            };
+
+            assignments.push(newAssign);
+
+            // clear form, keep name empty for next, reset checkbox
+            assignName.value = '';
+            // keep date as is? optionally reset to empty, but we can keep for convenience
+            // assignDeadline.value = '';  // (maybe not)
+            assignDone.checked = false;
+
+            updateButton();
+            renderList();
+        }
+
+        // event listeners
+        addBtn.addEventListener('click', addAssignment);
+        // allow pressing Enter in name field
+        assignName.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') addAssignment();
+        });
+
+        // set default datetime-local to now (rounded to next hour) for convenience
+        function setDefaultDeadline() {
+            const now = new Date();
+            now.setMinutes(0, 0, 0);  // round to full hour
+            now.setHours(now.getHours() + 1); // one hour from now
+            const year = now.getFullYear();
+            const month = String(now.getMonth() + 1).padStart(2,'0');
+            const day = String(now.getDate()).padStart(2,'0');
+            const hours = String(now.getHours()).padStart(2,'0');
+            const minutes = String(now.getMinutes()).padStart(2,'0');
+            assignDeadline.value = `${year}-${month}-${day}T${hours}:${minutes}`;
+        }
+        setDefaultDeadline();
+
+        // initialize with a couple of example assignments to show behavior
+        (function addExamples() {
+            const now = Date.now();
+            const day = 24*60*60*1000;
+            assignments = [
+                {
+                    id: uid(),
+                    name: 'Math problem set',
+                    deadlineTimestamp: now + 2*day,
+                    completed: false,
+                },
+                {
+                    id: uid(),
+                    name: 'Physics lab report',
+                    deadlineTimestamp: now + 5*day,
+                    completed: true,
+                },
+                {
+                    id: uid(),
+                    name: 'Essay draft',
+                    deadlineTimestamp: now + 1*day,
+                    completed: false,
+                }
+            ];
+            updateButton();
+            renderList();
+        })();
+    })();
+</script>
+</body>
+</html>
